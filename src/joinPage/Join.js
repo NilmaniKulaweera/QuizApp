@@ -1,6 +1,7 @@
 import React from 'react';
 import PinNumber from './PinNumber';
 import JoinButton from './JoinButton';
+import './Join.css';
 
 class Join extends React.Component {
     pinNumber = '';
@@ -23,8 +24,8 @@ class Join extends React.Component {
 
     render() {
         return (
-            <div className='tc'>
-                <h1 className='f1'>Quiz App</h1>
+            <div className='join-container'>
+                <h1 className='f1 white'>Quiz App</h1>
                 <PinNumber pinNumberChange={this.pinNumberChange}></PinNumber>
                 <JoinButton buttonClicked={this.buttonClicked}></JoinButton>
             </div>        

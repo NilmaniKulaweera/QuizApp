@@ -4,7 +4,7 @@ const JoinButton = ({buttonClicked}) => {
 	return (
 		<div className='pa2'>
 			<button 
-				className='tc pa3 ba b--green bg-lightest-blue' 
+				className='tc pa3 ba b--black bg-black white' 
 				placeholder='Pin Number'
 				onClick={buttonClicked}
 			>Join Quiz</button>

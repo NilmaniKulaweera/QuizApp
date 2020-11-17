@@ -4,7 +4,7 @@ const PinNumber = ({pinNumberChange}) => {
 	return (
 		<div className='pa2'>
 			<input 
-				className='tc pa3 ba b--green bg-lightest-blue' 
+				className='tc pa3 ba b--blue bg-white' 
 				placeholder='Pin Number'
 				onChange={pinNumberChange}
 			/>
