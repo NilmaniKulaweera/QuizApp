@@ -1,0 +1,19 @@
+html, body {
+    font-family: 'Roboto', sans-serif;
+    padding: 0;
+    margin: 0;
+  }
+  
+  #root {
+    height: 100vh;
+  }
+  
+
+.home-page-container{
+    display: flex;
+    align-items: stretch;
+    justify-content: space-around;
+    text-align: center;
+    flex-direction: row;
+    height: 100vh;
+}

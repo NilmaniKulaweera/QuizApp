@@ -1,0 +1,44 @@
+html, body {
+    font-family: 'Roboto', sans-serif;
+    padding: 0;
+    margin: 0;
+  }
+  
+  #root {
+    height: 100vh;
+  }
+  
+.start-page-container{
+    display: flex;
+    text-align: center; 
+    flex-direction: column;
+    height: 100vh;
+}
+
+.heading{
+  height: 40vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.start-page-button-container{
+    display: flex;
+    align-items: stretch;
+    justify-content: space-around;
+    text-align: center;
+    flex-direction: row;
+    height: 60vh;
+}
+
+.login-to-create{
+    display: flex;
+    align-items: flex-start;
+    width: 20%;
+}
+
+.join{
+    display: flex;
+    align-items: flex-start;
+    width: 20%;
+}
