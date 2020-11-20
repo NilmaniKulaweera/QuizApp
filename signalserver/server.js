@@ -34,6 +34,12 @@ io.on('connection',(socket)=>{
     socket.on('disconnect',()=>{
         console.log('user disconnected');
     });
+
+    //added
+    socket.on('disconnectPeer',function(data){
+        console.log('peer disconnected');
+        socket.to(data.room).emit('disconnectPeer',data.username);
+    });
 });
 
 http.listen(3000,()=>{

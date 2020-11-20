@@ -1,9 +1,7 @@
 import React from 'react';
 import './Error.css';
 
-const Error = (props) => {
-    const { quizObject } = props;
-
+const Error = () => {
     return (
         <div className="error pa2">
             <div className="error-card" style={{width: "100%"}}>

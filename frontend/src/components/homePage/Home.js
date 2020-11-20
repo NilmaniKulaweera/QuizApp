@@ -10,12 +10,13 @@ let socket;
 const ENDPOINT = 'localhost:3000';
 
 class Home extends React.Component {
-    pinNumber = this.getRandomInt(1,100000);
+    pinNumber = this.getRandomInt(1,100000).toString();
 
     constructor() {
         super();
         this.state = {
-            quizObject: QuizObject
+            quizObject: new QuizObject(),
+            usernames: []
         }
     }
     
@@ -25,15 +26,34 @@ class Home extends React.Component {
         this.addSocketListeners();
     }
 
+    componentWillUnmount() {
+        socket.emit('disconnectPeer', {username: this.state.username, room: this.state.pinNumber});
+        socket.off();
+        console.log("leave from room", this.state.pinNumber);
+    }
+
     setSocketConnection() {
         socket = io(ENDPOINT);
         socket.emit('create', this.pinNumber);
     }
 
-    addSocketListeners() {
-        socket.on('roomcreated', function(room){
+    addSocketListeners = () => {
+        socket.on('roomcreated', (room) => {
             console.log("room created", room);
-        })
+        });
+
+        socket.on('newuser', (username) => {
+            this.state.usernames.push(username);
+            this.setState({usernames: this.state.usernames});
+        });
+
+        socket.on('disconnectPeer', (username) => {
+            var index = this.state.usernames.indexOf(username);
+            if (index > -1) {
+                this.state.usernames.splice(index, 1);
+            }
+            this.setState({usernames: this.state.usernames});
+        });
     }
 
     getRandomInt(min, max) {
@@ -46,7 +66,7 @@ class Home extends React.Component {
         return (
             <div className='home-page-container'>
                 <QuizDetail quizObject={this.state.quizObject}></QuizDetail>
-                <RoomDetail roomId={this.pinNumber}></RoomDetail>
+                <RoomDetail roomId={this.pinNumber} usernames={this.state.usernames}></RoomDetail>
             </div>        
         )
     }
