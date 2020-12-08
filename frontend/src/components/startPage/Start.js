@@ -13,12 +13,12 @@ class Start extends React.Component {
                 <div className='start-page-button-container'>
                     <Link className="login-to-create pa2" to="/Home">
                         <div style={{width: "100%"}}>
-                            <button className='tc pa5 ba b--black bg-black white br2' style={{cursor: "pointer", width: "100%"}} placeholder='Pin Number'>Login to Create Quiz</button>
+                            <button className='tc pa5 ba b--black bg-black white br2' style={{cursor: "pointer", width: "100%"}}>Login to Create Quiz</button>
                         </div>
                     </Link>
                     <Link className="join pa2" to="/Join">
                         <div style={{width: "100%"}}>
-                            <button className='tc pa5 ba b--black bg-black white br2' style={{cursor: "pointer", width: "100%"}} placeholder='Pin Number'>Join Quiz</button>
+                            <button className='tc pa5 ba b--black bg-black white br2' style={{cursor: "pointer", width: "100%"}}>Join Quiz</button>
                         </div>
                     </Link>
                     

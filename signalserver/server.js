@@ -1,6 +1,12 @@
 var app = require('express')();
 var http = require('http').createServer(app);
-var io = require('socket.io')(http);
+// var io = require('socket.io')(http);
+
+var io = require('socket.io')(http, {
+    cors: {
+       origin: "http://localhost:3001",
+    }
+});
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
@@ -27,6 +33,12 @@ io.on('connection',(socket)=>{
     });
     socket.on('disconnect',()=>{
         console.log('user disconnected');
+    });
+
+    //added
+    socket.on('disconnectPeer',function(data){
+        console.log('peer disconnected');
+        socket.to(data.room).emit('disconnectPeer',data.username);
     });
 });
 
