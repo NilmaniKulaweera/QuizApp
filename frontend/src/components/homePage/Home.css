@@ -7,13 +7,4 @@ html, body {
   #root {
     height: 100vh;
   }
-  
-
-.home-page-container{
-    display: flex;
-    align-items: stretch;
-    justify-content: space-around;
-    text-align: center;
-    flex-direction: row;
-    height: 100vh;
-}
+ 

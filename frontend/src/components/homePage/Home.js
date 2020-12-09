@@ -1,10 +1,9 @@
 import React from 'react';
 import './Home.css';
 import { getQuizDetails } from '../../services/BackEndService';
-import QuizDetail from '../shared/quizDetail/QuizDetail';
-import RoomDetail from '../shared/roomDetail/RoomDetail';
 import QuizObject from '../../models/QuizObject';
 import { emitCreateRoom, isSocketConnected, socketInstantiatedObservable, roomcreatedObservable, newUserJoinedObservable, disconnectPeerObservable } from '../../services/SocketIoService';
+import QuizDetailContainer from '../../containers/quizDetailContainer/QuizDetailContainer';
 
 let socketInstantiatedSubscription;
 let roomcreatedSubscription;
@@ -82,10 +81,7 @@ class Home extends React.Component {
 
     render() {
         return (
-            <div className='home-page-container'>
-                <QuizDetail quizObject={this.state.quizObject}></QuizDetail>
-                <RoomDetail roomId={this.state.pinNumber} usernames={this.state.usernames}></RoomDetail>
-            </div>        
+            <QuizDetailContainer quizObject={this.state.quizObject} roomId={this.state.pinNumber} usernames={this.state.usernames}></QuizDetailContainer>     
         )
     }
 }
