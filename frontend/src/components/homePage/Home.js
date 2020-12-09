@@ -1,59 +1,77 @@
 import React from 'react';
 import './Home.css';
 import { getQuizDetails } from '../../services/BackEndService';
-import io from 'socket.io-client';
 import QuizDetail from '../shared/quizDetail/QuizDetail';
 import RoomDetail from '../shared/roomDetail/RoomDetail';
 import QuizObject from '../../models/QuizObject';
+import { emitCreateRoom, isSocketConnected, socketInstantiatedObservable, roomcreatedObservable, newUserJoinedObservable, disconnectPeerObservable } from '../../services/SocketIoService';
 
-let socket;
-const ENDPOINT = 'localhost:3000';
+let socketInstantiatedSubscription;
+let roomcreatedSubscription;
+let newUserJoinedSubscription;
+let disconnectPeerSubscription;
 
 class Home extends React.Component {
     pinNumber = this.getRandomInt(1,100000).toString();
-
+    
     constructor() {
         super();
         this.state = {
+            pinNumber: null,
             quizObject: new QuizObject(),
-            usernames: []
+            usernames: [],
         }
     }
     
     componentDidMount() {
-        this.setState({quizObject: getQuizDetails()[0]});
-        this.setSocketConnection();
-        this.addSocketListeners();
+        this.subscribeToObservables();
+        this.setState({quizObject: getQuizDetails()[0], usernames: []});
     }
 
     componentWillUnmount() {
-        socket.emit('disconnectPeer', {username: this.state.username, room: this.state.pinNumber});
-        socket.off();
-        console.log("leave from room", this.state.pinNumber);
+        this.unsubscribeFromObservables();
     }
 
-    setSocketConnection() {
-        socket = io(ENDPOINT);
-        socket.emit('create', this.pinNumber);
-    }
-
-    addSocketListeners = () => {
-        socket.on('roomcreated', (room) => {
-            console.log("room created", room);
-        });
-
-        socket.on('newuser', (username) => {
-            this.state.usernames.push(username);
-            this.setState({usernames: this.state.usernames});
-        });
-
-        socket.on('disconnectPeer', (username) => {
-            var index = this.state.usernames.indexOf(username);
-            if (index > -1) {
-                this.state.usernames.splice(index, 1);
+    subscribeToObservables = () => {
+        socketInstantiatedSubscription = socketInstantiatedObservable.subscribe((value) => {
+            isSocketConnected();
+            if (value === 1) {
+                emitCreateRoom(this.pinNumber);
             }
-            this.setState({usernames: this.state.usernames});
         });
+
+        roomcreatedSubscription = roomcreatedObservable.subscribe((room) => {
+            if (room != null) {
+                console.log("room created", room);
+                this.setState({pinNumber: room});
+            }
+        });
+
+        newUserJoinedSubscription = newUserJoinedObservable.subscribe((username) => {
+            if (username != null) {
+                this.state.usernames.push(username);
+                this.setState({usernames: this.state.usernames});
+                console.log("new peer joined", username);
+            }
+        });
+
+        disconnectPeerSubscription = disconnectPeerObservable.subscribe((username) => {
+                if (username != null) {
+                var index = this.state.usernames.indexOf(username);
+                if (index > -1) {
+                    this.state.usernames.splice(index, 1);
+                }
+                this.setState({usernames: this.state.usernames});
+                console.log("peer left", username);
+            }
+        });
+    }
+
+    unsubscribeFromObservables() {
+        socketInstantiatedSubscription.unsubscribe();
+        roomcreatedSubscription.unsubscribe();
+        newUserJoinedSubscription.unsubscribe();
+        disconnectPeerSubscription.unsubscribe();
     }
 
     getRandomInt(min, max) {
@@ -66,7 +84,7 @@ class Home extends React.Component {
         return (
             <div className='home-page-container'>
                 <QuizDetail quizObject={this.state.quizObject}></QuizDetail>
-                <RoomDetail roomId={this.pinNumber} usernames={this.state.usernames}></RoomDetail>
+                <RoomDetail roomId={this.state.pinNumber} usernames={this.state.usernames}></RoomDetail>
             </div>        
         )
     }
