@@ -48,6 +48,11 @@ export function emitDisconnectPeer(data) {
     socket.emit('disconnectPeer', data);
 }
 
+export function emitSendQuestion(question) {
+    console.log("emitted question to peers: ", question);
+    socket.emit('sendQuestion', question);
+}
+
 export function isSocketConnected() {
     console.log ("socket connected", socket.connected);
     return socket.connected;

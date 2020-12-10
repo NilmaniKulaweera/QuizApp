@@ -17,19 +17,19 @@ export const questionDetails = `[
     {
         "questionId": "1-1",
         "correspondingQuizId": "1",
-        "question": "Question 1",
+        "question": "What is the capital of England ?",
         "correctAnswerId": "1-1-B"
     },
     {
         "questionId": "1-2",
         "correspondingQuizId": "1",
-        "question": "Question 2",
+        "question": "What is 5+8 ?",
         "correctAnswerId": "1-2-C"
     },
     {
         "questionId": "1-3",
         "correspondingQuizId": "1",
-        "question": "Question 3",
+        "question": "What is OOP ?",
         "correctAnswerId": "1-3-A"
     }
 ]`;

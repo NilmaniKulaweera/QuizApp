@@ -3,9 +3,10 @@ import './Home.css';
 import { getQuizDetails } from '../../services/BackEndService';
 import QuizObject from '../../models/QuizObject';
 import { emitCreateRoom, isSocketConnected, socketInstantiatedObservable, roomcreatedObservable, newUserJoinedObservable, disconnectPeerObservable } from '../../services/SocketIoService';
-import QuizDetailContainer from '../../containers/quizDetailContainer/QuizDetailContainer';
 import Question from '../question/Question';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import QuizDetail from '../../components/shared/quizDetail/QuizDetail';
+import RoomDetail from '../../components/shared/roomDetail/RoomDetail';
 
 let socketInstantiatedSubscription;
 let roomcreatedSubscription;
@@ -84,30 +85,14 @@ class Home extends React.Component {
     render() {
         return (
             <Router>
-                <div>
-                <nav>
-                    <h3>Quiz App</h3>
-                    <ul className="nav-links">
-                        <Link style={{color:'white'}} to={
-                            {
-                                pathname: "/quiz",
-                                state: this.state
-                            }
-                        }>Quiz Details</Link>
-                        <Link style={{color:'white'}} to={
-                            {
-                                pathname: "/questions",
-                                state: this.state
-                            }
-                        }>Questions</Link>
-                    </ul>
-                </nav>
-                <Switch>
-                    <Route exact path="/quiz"  component={QuizDetailContainer} />
-                    <Route exact path="/questions"  component={Question} />
-                </Switch>
-                </div>
-            </Router>    
+                <div className='quiz-details-container'>
+                    <QuizDetail quizObject={this.state.quizObject}></QuizDetail>
+                    <RoomDetail roomId={this.state.pinNumber} usernames={this.state.usernames}></RoomDetail>
+                    <Switch>
+                        <Route exact path="/Home/quiz" handler={Question} component={Question} />
+                    </Switch>
+                </div> 
+            </Router>        
         )
     }
 }

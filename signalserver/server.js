@@ -40,6 +40,9 @@ io.on('connection',(socket)=>{
         console.log('peer disconnected');
         socket.to(data.room).emit('disconnectPeer',data.username);
     });
+    socket.on('sendQuestion',function(question){
+        console.log('question received: ', question);
+    });
 });
 
 http.listen(3000,()=>{
