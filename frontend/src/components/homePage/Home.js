@@ -4,6 +4,8 @@ import { getQuizDetails } from '../../services/BackEndService';
 import QuizObject from '../../models/QuizObject';
 import { emitCreateRoom, isSocketConnected, socketInstantiatedObservable, roomcreatedObservable, newUserJoinedObservable, disconnectPeerObservable } from '../../services/SocketIoService';
 import QuizDetailContainer from '../../containers/quizDetailContainer/QuizDetailContainer';
+import Question from '../question/Question';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 let socketInstantiatedSubscription;
 let roomcreatedSubscription;
@@ -33,7 +35,6 @@ class Home extends React.Component {
 
     subscribeToObservables = () => {
         socketInstantiatedSubscription = socketInstantiatedObservable.subscribe((value) => {
-            isSocketConnected();
             if (value === 1) {
                 emitCreateRoom(this.pinNumber);
             }
@@ -42,6 +43,7 @@ class Home extends React.Component {
         roomcreatedSubscription = roomcreatedObservable.subscribe((room) => {
             if (room != null) {
                 console.log("room created", room);
+                isSocketConnected();
                 this.setState({pinNumber: room});
             }
         });
@@ -81,7 +83,31 @@ class Home extends React.Component {
 
     render() {
         return (
-            <QuizDetailContainer quizObject={this.state.quizObject} roomId={this.state.pinNumber} usernames={this.state.usernames}></QuizDetailContainer>     
+            <Router>
+                <div>
+                <nav>
+                    <h3>Quiz App</h3>
+                    <ul className="nav-links">
+                        <Link style={{color:'white'}} to={
+                            {
+                                pathname: "/quiz",
+                                state: this.state
+                            }
+                        }>Quiz Details</Link>
+                        <Link style={{color:'white'}} to={
+                            {
+                                pathname: "/questions",
+                                state: this.state
+                            }
+                        }>Questions</Link>
+                    </ul>
+                </nav>
+                <Switch>
+                    <Route exact path="/quiz"  component={QuizDetailContainer} />
+                    <Route exact path="/questions"  component={Question} />
+                </Switch>
+                </div>
+            </Router>    
         )
     }
 }

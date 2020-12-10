@@ -8,3 +8,20 @@ html, body {
     height: 100vh;
   }
  
+  nav{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 10vh;
+    background: rgb(6, 73, 95);
+    color: white;
+  }
+  
+  .nav-links{
+    width: 40%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    list-style: none;
+  }
+  
