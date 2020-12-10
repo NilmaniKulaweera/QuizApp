@@ -1,10 +1,6 @@
 import React from 'react';
 import './Join.css';
-
-import io from 'socket.io-client';
-
-let socket;
-const ENDPOINT = 'localhost:3000';
+import { emitJoinRoom, isSocketConnected, emitDisconnectPeer } from '../../services/SocketIoService';
 
 class Join extends React.Component {
     pinNumber = '';
@@ -17,23 +13,9 @@ class Join extends React.Component {
 		}
     }
 
-    componentDidMount() {
-        this.setSocketConnection();
-        this.addSocketListeners();
-    }
-
     componentWillUnmount() {
-        socket.emit('disconnectPeer', {username: this.state.username, room: this.state.pinNumber});
-        socket.off();
+        emitDisconnectPeer({username: this.state.username, room: this.state.pinNumber})
         console.log("leave from room", this.state.pinNumber);
-    }
-
-    setSocketConnection() {
-        socket = io(ENDPOINT);
-    }
-
-    addSocketListeners() {
-        
     }
 
     usernameChange = (event) => {
@@ -45,8 +27,10 @@ class Join extends React.Component {
     }
     
     buttonClicked = (event) => {
-        socket.emit('join', {username: this.state.username, room: this.state.pinNumber});
-        console.log("joined to room", this.state.pinNumber);
+        if (isSocketConnected()) {
+            emitJoinRoom({username: this.state.username, room: this.state.pinNumber});
+            console.log("joined to room", this.state.pinNumber);
+        }
     }
 
     render() {
