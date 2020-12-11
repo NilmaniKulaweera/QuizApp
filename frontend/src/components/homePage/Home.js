@@ -4,7 +4,7 @@ import { getQuizDetails } from '../../services/BackEndService';
 import QuizObject from '../../models/QuizObject';
 import { emitCreateRoom, isSocketConnected, socketInstantiatedObservable, roomcreatedObservable, newUserJoinedObservable, disconnectPeerObservable } from '../../services/SocketIoService';
 import Question from '../question/Question';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import QuizDetail from '../../components/shared/quizDetail/QuizDetail';
 import RoomDetail from '../../components/shared/roomDetail/RoomDetail';
 
@@ -84,15 +84,13 @@ class Home extends React.Component {
 
     render() {
         return (
-            <Router>
-                <div className='quiz-details-container'>
-                    <QuizDetail quizObject={this.state.quizObject}></QuizDetail>
-                    <RoomDetail roomId={this.state.pinNumber} usernames={this.state.usernames}></RoomDetail>
-                    <Switch>
-                        <Route exact path="/Home/AdminQuiz" handler={Question} component={Question} />
-                    </Switch>
-                </div> 
-            </Router>        
+            <div className='quiz-details-container'>
+                <QuizDetail quizObject={this.state.quizObject} roomId={this.state.pinNumber}></QuizDetail>
+                <RoomDetail roomId={this.state.pinNumber} usernames={this.state.usernames}></RoomDetail>
+                <Switch>
+                    <Route exact path="/Home/AdminQuiz" handler={Question} component={Question} />
+                </Switch>
+            </div>       
         )
     }
 }

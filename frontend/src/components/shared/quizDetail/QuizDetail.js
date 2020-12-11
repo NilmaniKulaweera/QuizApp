@@ -3,7 +3,7 @@ import './QuizDetail.css';
 import { Link } from 'react-router-dom';
 
 const QuizDetail = (props) => {
-    const { quizObject } = props;
+    const { quizObject, roomId } = props;
 
     return (
         <div className="quiz-details pa2">
@@ -17,7 +17,16 @@ const QuizDetail = (props) => {
                 <p>{ quizObject.quizTitle }</p>
                 <p className="fw9">Number of Questions</p>
                 <p>{ quizObject.numberOfQuestions }</p>
-                <Link to="/Home/AdminQuiz">
+                {/* <Link to="/Home/AdminQuiz" params={{ quizId: quizObject.quizId }}>
+                        <button className='tc pa3 ba b--black bg-black white br2' style={{cursor: "pointer", width: "100%"}}>Start Quiz</button>
+                </Link> */}
+                <Link to={
+                    {
+                        pathname: "/Home/AdminQuiz",
+                        roomId: roomId,
+                        started: true
+                    }
+                }>
                         <button className='tc pa3 ba b--black bg-black white br2' style={{cursor: "pointer", width: "100%"}}>Start Quiz</button>
                 </Link>
             </div>
