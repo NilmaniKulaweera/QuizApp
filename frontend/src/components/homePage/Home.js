@@ -89,7 +89,7 @@ class Home extends React.Component {
                     <QuizDetail quizObject={this.state.quizObject}></QuizDetail>
                     <RoomDetail roomId={this.state.pinNumber} usernames={this.state.usernames}></RoomDetail>
                     <Switch>
-                        <Route exact path="/Home/quiz" handler={Question} component={Question} />
+                        <Route exact path="/Home/AdminQuiz" handler={Question} component={Question} />
                     </Switch>
                 </div> 
             </Router>        

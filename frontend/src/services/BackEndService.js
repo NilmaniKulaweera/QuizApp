@@ -12,7 +12,7 @@ export const getQuizDetails = () => {
 
 export const getQuestionDetails = () => {
         var questionObjectArray = JSON.parse(questionDetails).map((question) => {
-            return new QuestionObject(question.questionId, question.correspondingQuizId, question.question, question.correctAnswerId);
+            return new QuestionObject(question.questionId, question.correspondingQuizId, question.question, question.correctAnswerId, question.answers);
         });
         return questionObjectArray;
     }

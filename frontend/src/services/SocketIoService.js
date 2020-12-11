@@ -48,9 +48,9 @@ export function emitDisconnectPeer(data) {
     socket.emit('disconnectPeer', data);
 }
 
-export function emitSendQuestion(question) {
-    console.log("emitted question to peers: ", question);
-    socket.emit('sendQuestion', question);
+export function emitSendQuestion(questionData) {
+    console.log("emitted question to peers: ", questionData);
+    socket.emit('sendQuestion', questionData);
 }
 
 export function isSocketConnected() {

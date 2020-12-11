@@ -3,11 +3,13 @@ export default class QuestionObject{
     correspondingQuizId;
     question;
     correctAnswerId;
+    answers;
 
-    constructor(questionId, correspondingQuizId, question, correctAnswerId) {
+    constructor(questionId, correspondingQuizId, question, correctAnswerId, answers) {
         this.questionId = questionId;
         this.correspondingQuizId = correspondingQuizId;
         this.question = question;
         this.correctAnswerId = correctAnswerId;
+        this.answers = answers;
     }
 }

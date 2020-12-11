@@ -26,16 +26,27 @@ class Question extends React.Component {
 
     getQuestions() {
         this.questions = getQuestionDetails();
+        console.log(this.questions);
         this.setState({questionObject: this.questions[this.state.questionNumber]});
         socketInstantiatedSubscription = socketInstantiatedObservable.subscribe((value) => {
             if (value === 1) {
-                emitSendQuestion(this.questions[0].question);
+                emitSendQuestion({
+                    questionId: this.questions[0].questionId,
+                    correspondingQuizId: this.questions[0].correspondingQuizId,
+                    question: this.questions[0].question, 
+                    answers: this.questions[0].answers
+                });
             }
         });        
     }
 
     buttonClicked = () => {
-        emitSendQuestion(this.questions[this.state.questionNumber + 1].question);
+        emitSendQuestion({
+            questionId: this.questions[this.state.questionNumber + 1].questionId, 
+            correspondingQuizId: this.questions[this.state.questionNumber + 1].correspondingQuizId, 
+            question: this.questions[this.state.questionNumber + 1].question, 
+            answers: this.questions[this.state.questionNumber + 1].answers
+        });
         this.setState({questionObject: this.questions[this.state.questionNumber + 1]});
         this.setState({questionNumber: this.state.questionNumber+1});
     }
