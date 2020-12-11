@@ -42,6 +42,7 @@ io.on('connection',(socket)=>{
     });
     socket.on('sendQuestion',function(question){
         console.log('question received: ');
+        console.log('room id: ', question.roomId);
         console.log(question.questionId + " : " + question.question);
         console.log('answer 1: ', question.answers[0].answer);
         console.log('answer 2: ', question.answers[1].answer);

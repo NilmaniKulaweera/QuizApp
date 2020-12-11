@@ -3,25 +3,42 @@ import { getQuestionDetails } from '../../services/BackEndService';
 import QuestionObject from '../../models/QuizObject';
 import './Question.css';
 import { emitSendQuestion, socketInstantiatedObservable } from '../../services/SocketIoService';
+import { Link } from 'react-router-dom';
 
 let socketInstantiatedSubscription;
 
 class Question extends React.Component {
     questions = [];
-
+    roomId;
+    started;
+    
     constructor() {
         super();
         this.state = {
             questionObject: new QuestionObject(),
             questionNumber: 0,
+
         }
     }
     componentDidMount() {
-        this.getQuestions();
+        console.log(this.props.history);
+        this.started = this.props.location.started;
+        this.roomId = this.props.location.roomId;
+        if(this.started === true) {
+            this.getQuestions();
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.started !== true) {
+            this.props.history.push("/");
+        }
     }
 
     componentWillUnmount() {
-        socketInstantiatedSubscription.unsubscribe();
+        if(socketInstantiatedSubscription){
+            socketInstantiatedSubscription.unsubscribe();
+        }
     }
 
     getQuestions() {
@@ -31,6 +48,7 @@ class Question extends React.Component {
         socketInstantiatedSubscription = socketInstantiatedObservable.subscribe((value) => {
             if (value === 1) {
                 emitSendQuestion({
+                    roomId: this.roomId,
                     questionId: this.questions[0].questionId,
                     correspondingQuizId: this.questions[0].correspondingQuizId,
                     question: this.questions[0].question, 
@@ -40,8 +58,9 @@ class Question extends React.Component {
         });        
     }
 
-    buttonClicked = () => {
+    nextbuttonClicked = () => {
         emitSendQuestion({
+            roomId: this.roomId,
             questionId: this.questions[this.state.questionNumber + 1].questionId, 
             correspondingQuizId: this.questions[this.state.questionNumber + 1].correspondingQuizId, 
             question: this.questions[this.state.questionNumber + 1].question, 
@@ -51,6 +70,30 @@ class Question extends React.Component {
         this.setState({questionNumber: this.state.questionNumber+1});
     }
 
+    renderButton() {
+        if ((this.state.questionNumber + 1) !== this.questions.length) {
+            return (
+                <button 
+                            className='tc pa3 ba b--black bg-black white br2' 
+                            style={{cursor: "pointer"}}
+                            placeholder='Pin Number'
+                            onClick={this.nextbuttonClicked}
+                        >Next Question</button>
+            );
+        } else {
+            return (
+                <Link to="/">
+                    <button 
+                        className='tc pa3 ba b--black bg-black white br2' 
+                        style={{cursor: "pointer"}}
+                        placeholder='Pin Number'
+                        onClick={this.buttonClicked}
+                    >End</button>
+                </Link>
+            );
+        }
+    }
+   
     render() {
         return (
             <div className="quiz-details pa2">
@@ -63,17 +106,13 @@ class Question extends React.Component {
                     <p>{this.state.questionObject.questionId}</p>
                     <p className="fw9">Question</p>
                     <p>{this.state.questionObject.question}</p>
-                    <button 
-                            className='tc pa3 ba b--black bg-black white br2' 
-                            style={{cursor: "pointer"}}
-                            placeholder='Pin Number'
-                            onClick={this.buttonClicked}
-                        >Next Question</button>
+                    {this.renderButton()}
                 </div>
-                
             </div>
         );
     }
+        
 }
+
     
 export default Question;
