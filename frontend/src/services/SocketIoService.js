@@ -49,7 +49,12 @@ export function emitDisconnectPeer(data) {
 }
 
 export function isSocketConnected() {
-    console.log ("socket connected", socket.connected);
-    return socket.connected;
+    //console.log ("socket connected", socket.connected);
+    if(socket){
+        return socket.connected;
+    }else {
+        return false;
+    }
+    
 }
 
