@@ -53,6 +53,11 @@ export function emitDisconnectPeer(data) {
     socket.emit('disconnectPeer', data);
 }
 
+export function emitSendQuestion(questionData) {
+    console.log("emitted question to peers: ", questionData);
+    socket.emit('sendQuestion', questionData);
+}
+
 export function isSocketConnected() {
     //console.log ("socket connected", socket.connected);
     if(socket){

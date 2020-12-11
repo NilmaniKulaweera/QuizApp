@@ -3,7 +3,10 @@ import './Home.css';
 import { getQuizDetails } from '../../services/BackEndService';
 import QuizObject from '../../models/QuizObject';
 import { emitCreateRoom, isSocketConnected, socketInstantiatedObservable, roomcreatedObservable, newUserJoinedObservable, disconnectPeerObservable } from '../../services/SocketIoService';
-import QuizDetailContainer from '../../containers/quizDetailContainer/QuizDetailContainer';
+import Question from '../question/Question';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import QuizDetail from '../../components/shared/quizDetail/QuizDetail';
+import RoomDetail from '../../components/shared/roomDetail/RoomDetail';
 
 let socketInstantiatedSubscription;
 let roomcreatedSubscription;
@@ -33,7 +36,6 @@ class Home extends React.Component {
 
     subscribeToObservables = () => {
         socketInstantiatedSubscription = socketInstantiatedObservable.subscribe((value) => {
-            isSocketConnected();
             if (value === 1) {
                 emitCreateRoom(this.pinNumber);
             }
@@ -42,6 +44,7 @@ class Home extends React.Component {
         roomcreatedSubscription = roomcreatedObservable.subscribe((room) => {
             if (room != null) {
                 console.log("room created", room);
+                isSocketConnected();
                 this.setState({pinNumber: room});
             }
         });
@@ -81,7 +84,15 @@ class Home extends React.Component {
 
     render() {
         return (
-            <QuizDetailContainer quizObject={this.state.quizObject} roomId={this.state.pinNumber} usernames={this.state.usernames}></QuizDetailContainer>     
+            <Router>
+                <div className='quiz-details-container'>
+                    <QuizDetail quizObject={this.state.quizObject}></QuizDetail>
+                    <RoomDetail roomId={this.state.pinNumber} usernames={this.state.usernames}></RoomDetail>
+                    <Switch>
+                        <Route exact path="/Home/AdminQuiz" handler={Question} component={Question} />
+                    </Switch>
+                </div> 
+            </Router>        
         )
     }
 }

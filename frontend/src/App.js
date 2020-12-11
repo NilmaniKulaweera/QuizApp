@@ -22,7 +22,7 @@ class App extends React.Component {
             <div>
                 <Router>
                     <Route path="/" exact component={Start} />
-                    <Route path="/Home" exact component={Home} />
+                    <Route path="/Home" handler={Home} component={Home} ></Route>
                     <Route path="/Join" exact component={Join} />
                     <Route path="/Quiz" exact component={Quiz} />
                     <Route path="/Error" exact component={Error} />

@@ -8,3 +8,27 @@ html, body {
     height: 100vh;
   }
  
+  nav{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 10vh;
+    background: rgb(6, 73, 95);
+    color: white;
+  }
+  
+  .nav-links{
+    width: 40%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    list-style: none;
+  }
+  .quiz-details-container{
+    display: flex;
+    align-items: stretch;
+    justify-content: space-around;
+    text-align: center;
+    flex-direction: row;
+    height: 90vh;
+}

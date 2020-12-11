@@ -41,6 +41,12 @@ io.on('connection',(socket)=>{
         console.log('peer disconnected');
         socket.to(data.room).emit('disconnectPeer',data.username);
     });
+    socket.on('sendQuestion',function(question){
+        console.log('question received: ');
+        console.log(question.questionId + " : " + question.question);
+        console.log('answer 1: ', question.answers[0].answer);
+        console.log('answer 2: ', question.answers[1].answer);
+    });
 });
 
 http.listen(3000,()=>{

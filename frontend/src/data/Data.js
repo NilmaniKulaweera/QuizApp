@@ -12,53 +12,55 @@ export const quizDetails = `[
     }
 ]`;
 
-// get the list of questions when quiz id is given
+// get the list of questions with answers when quiz id is given
 export const questionDetails = `[
     {
         "questionId": "1-1",
         "correspondingQuizId": "1",
-        "question": "Question 1",
-        "correctAnswerId": "1-1-B"
+        "question": "What is the capital of England ?",
+        "correctAnswerId": "1-1-B",
+        "answers": [
+            {
+                "answerId": "1-1-A",
+                "answer": "New York"
+            },
+            {
+                "answerId": "1-1-B",
+                "answer": "London"
+            }
+        ]
     },
     {
         "questionId": "1-2",
         "correspondingQuizId": "1",
-        "question": "Question 2",
-        "correctAnswerId": "1-2-C"
+        "question": "What is 5+8 ?",
+        "correctAnswerId": "1-2-A",
+        "answers": [
+            {
+                "answerId": "1-2-A",
+                "answer": "13"
+            },
+            {
+                "answerId": "1-2-B",
+                "answer": "21"
+            }
+        ]
     },
     {
         "questionId": "1-3",
         "correspondingQuizId": "1",
-        "question": "Question 3",
-        "correctAnswerId": "1-3-A"
+        "question": "How many main OOP concepts are there ?",
+        "correctAnswerId": "1-3-A",
+        "answers": [
+            {
+                "answerId": "1-3-A",
+                "answer": "4"
+            },
+            {
+                "answerId": "1-3-B",
+                "answer": "3"
+            }
+        ]
     }
 ]`;
 
-// get the list of answers when question id is given
-export const answerDetails = `[
-    {
-        "answerId": "1-1-A",
-        "correspondingQuestionId": "1-1",
-        "correspondingQuizId": "1",
-        "answer": "Answer 1"
-    },
-    {
-        "answerId": "1-1-B",
-        "correspondingQuestionId": "1-1",
-        "correspondingQuizId": "1",
-        "answer": "Answer 2"
-    },
-    {
-        "answerId": "1-1-C",
-        "correspondingQuestionId": "1-1",
-        "correspondingQuizId": "1",
-        "answer": "Answer 3"
-    },
-    {
-        "answerId": "1-1-D",
-        "correspondingQuestionId": "1-1",
-        "correspondingQuizId": "1",
-        "answer": "Answer 4"
-    }
-]`;
-      
