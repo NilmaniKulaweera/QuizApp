@@ -8,6 +8,7 @@ export const socketInstantiatedObservable = new BehaviorSubject();
 export const roomcreatedObservable = new BehaviorSubject();
 export const newUserJoinedObservable = new BehaviorSubject();
 export const disconnectPeerObservable = new BehaviorSubject();
+export const joinSuccessfull = new BehaviorSubject();
 
 export function setSocketConnection() {
     socket = io(ENDPOINT);
@@ -32,6 +33,10 @@ export function addSocketListeners() {
 
     socket.on('disconnectPeer', (username) => {
         disconnectPeerObservable.next(username);
+    });
+    socket.on('joinsuccess',(data)=>{
+        console.log('join fired',data);
+        joinSuccessfull.next(data);
     });
     console.log("socket listeners added");
 }

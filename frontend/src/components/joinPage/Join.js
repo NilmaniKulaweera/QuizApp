@@ -1,9 +1,12 @@
 import React from 'react';
 import './Join.css';
-import { emitJoinRoom, isSocketConnected, emitDisconnectPeer } from '../../services/SocketIoService';
+import { emitJoinRoom, isSocketConnected, emitDisconnectPeer,joinSuccessfull } from '../../services/SocketIoService';
 
+
+let joinedSuccessfully;
 class Join extends React.Component {
     pinNumber = '';
+    //history = useHistory();
 
     constructor() {
         super();
@@ -13,7 +16,13 @@ class Join extends React.Component {
 		}
     }
 
+    componentDidMount() {
+        this.subscribeToObservables();
+        
+    }
+
     componentWillUnmount() {
+        this.unsubscribeFromObservables();
         emitDisconnectPeer({username: this.state.username, room: this.state.pinNumber})
         console.log("leave from room", this.state.pinNumber);
     }
@@ -25,8 +34,21 @@ class Join extends React.Component {
     pinNumberChange = (event) => {
         this.setState({pinNumber: event.target.value});
     }
+
+    subscribeToObservables = () => {
+        joinedSuccessfully =joinSuccessfull.subscribe((join)=>{
+            console.log('join fired');
+            if(join === 'done'){
+                this.props.history.push('/quiz');
+            }
+        });
+    }
+    unsubscribeFromObservables() {
+        joinedSuccessfully.unsubscribe();
+    }
+
     
-    buttonClicked = (event) => {
+    joinQuiz = (event) => {
         if (isSocketConnected()) {
             emitJoinRoom({username: this.state.username, room: this.state.pinNumber});
             console.log("joined to room", this.state.pinNumber);
@@ -56,7 +78,7 @@ class Join extends React.Component {
                         className='tc pa3 ba b--black bg-black white br2' 
                         style={{cursor: "pointer"}}
                         placeholder='Pin Number'
-                        onClick={this.buttonClicked}
+                        onClick={this.joinQuiz}
                     >Join Quiz</button>
                 </div>
             </div>        

@@ -29,6 +29,7 @@ io.on('connection',(socket)=>{
     socket.on('join',function(data){
         console.log(data);
         socket.join(data.room);
+        io.to(socket.id).emit('joinsuccess','done');
         socket.to(data.room).emit('newuser',data.username);
     });
     socket.on('disconnect',()=>{
