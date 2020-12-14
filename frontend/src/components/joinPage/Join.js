@@ -17,8 +17,7 @@ class Join extends React.Component {
     }
 
     componentDidMount() {
-        this.subscribeToObservables();
-        
+        this.subscribeToObservables(); 
     }
 
     componentWillUnmount() {

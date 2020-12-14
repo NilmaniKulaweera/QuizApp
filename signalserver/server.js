@@ -47,6 +47,7 @@ io.on('connection',(socket)=>{
         console.log(question.questionId + " : " + question.question);
         console.log('answer 1: ', question.answers[0].answer);
         console.log('answer 2: ', question.answers[1].answer);
+        io.to(question.roomId).emit('nextquestion',question);
     });
 });
 
