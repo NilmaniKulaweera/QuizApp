@@ -62,6 +62,11 @@ export function emitSendQuestion(questionData) {
     socket.emit('sendQuestion', questionData);
 }
 
+export function emitEndQuiz(data) {
+    console.log("emitted end quiz to peers: ", data);
+    socket.emit('endQuiz', data);
+}
+
 export function isSocketConnected() {
     //console.log ("socket connected", socket.connected);
     if(socket){

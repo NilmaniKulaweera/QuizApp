@@ -17,6 +17,7 @@ io.on('connection',(socket)=>{
     socket.on('create',function(room){
         socket.join(room);
         socket.emit('roomcreated',room);
+        console.log('room created', room);
         // console.log(io.sockets.adapter.rooms);
         // if(io.sockets.adapter.rooms[room]){
         //     socket.emit('roomexists','Room : ' + room + ' exists');
@@ -48,6 +49,11 @@ io.on('connection',(socket)=>{
         console.log('answer 1: ', question.answers[0].answer);
         console.log('answer 2: ', question.answers[1].answer);
         io.to(question.roomId).emit('nextquestion',question);
+    });
+    socket.on('endQuiz',function(data){
+        console.log('end quiz: ');
+        console.log(data.roomId);
+        console.log(data.quizId);
     });
 });
 
