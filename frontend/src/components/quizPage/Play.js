@@ -1,9 +1,11 @@
 import React from 'react';
 import QuestionObject from '../../models/QuestionObject';
-import { nextQuestion } from '../../services/SocketIoService';
-
+import { nextQuestion, endQuiz } from '../../services/SocketIoService';
+import { Redirect } from 'react-router-dom';
 
 let nextquestionSubscribed;
+let endQuizSubscription;
+
 class Play extends React.Component {
     questions = [];
 
@@ -12,6 +14,7 @@ class Play extends React.Component {
         this.state = {
             questionObject: new QuestionObject(),
             questionNumber: 0,
+            end: false,
         }
     }
     componentDidMount() {
@@ -27,13 +30,24 @@ class Play extends React.Component {
             //this.state.questionObject = question;
             this.setState({ questionObject: question })
         });
+
+        endQuizSubscription = endQuiz.subscribe((data) => {
+            if (data && data.roomId === this.state.questionObject.roomId) {
+                this.setState({end: true});
+                console.log("quiz ended");
+            }
+        });
     }
 
     unsubscribeSocketServices() {
         nextquestionSubscribed.unsubscribe();
+        endQuizSubscription.unsubscribe();
     }
 
     render() {
+        if (this.state.end === true) {
+            return <Redirect to="/Result" />
+        }
         const questionObj = this.state.questionObject;
         console.log(questionObj);
         let questionDiv;

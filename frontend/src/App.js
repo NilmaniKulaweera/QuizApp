@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Error from './components/shared/error/Error';
 import { setSocketConnection, addSocketListeners, disconnectSocketConnection } from './services/SocketIoService';
 import Quiz from './components/quizPage/Quiz';
+import Result from './components/resultPage/Result';
 
 class App extends React.Component {
     componentDidMount() {
@@ -25,6 +26,7 @@ class App extends React.Component {
                     <Route path="/Home" handler={Home} component={Home} ></Route>
                     <Route path="/Join" exact component={Join} />
                     <Route path="/Quiz" exact component={Quiz} />
+                    <Route path="/Result" exact component={Result} />
                     <Route path="/Error" exact component={Error} />
                 </Router>
             </div>

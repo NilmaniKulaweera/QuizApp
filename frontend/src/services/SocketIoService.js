@@ -10,6 +10,7 @@ export const newUserJoinedObservable = new BehaviorSubject();
 export const disconnectPeerObservable = new BehaviorSubject();
 export const joinSuccessfull = new BehaviorSubject();
 export const nextQuestion = new BehaviorSubject();
+export const endQuiz = new BehaviorSubject();
 
 export function setSocketConnection() {
     socket = io(ENDPOINT);
@@ -41,6 +42,9 @@ export function addSocketListeners() {
     });
     socket.on('nextquestion',(data)=>{
         nextQuestion.next(data);
+    });
+    socket.on('endQuiz',(data)=>{
+        endQuiz.next(data);
     });
     console.log("socket listeners added");
 }

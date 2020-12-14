@@ -22,8 +22,8 @@ class Join extends React.Component {
 
     componentWillUnmount() {
         this.unsubscribeFromObservables();
-        emitDisconnectPeer({username: this.state.username, room: this.state.pinNumber})
-        console.log("leave from room", this.state.pinNumber);
+        // emitDisconnectPeer({username: this.state.username, room: this.state.pinNumber})
+        // console.log("leave from room", this.state.pinNumber);
     }
 
     usernameChange = (event) => {

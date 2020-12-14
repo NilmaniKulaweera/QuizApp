@@ -54,6 +54,7 @@ io.on('connection',(socket)=>{
         console.log('end quiz: ');
         console.log(data.roomId);
         console.log(data.quizId);
+        io.to(data.roomId).emit('endQuiz',data);
     });
 });
 
