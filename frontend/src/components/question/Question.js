@@ -2,8 +2,8 @@ import React from 'react';
 import { getQuestionDetails } from '../../services/BackEndService';
 import QuestionObject from '../../models/QuizObject';
 import './Question.css';
-import { emitSendQuestion, socketInstantiatedObservable } from '../../services/SocketIoService';
-import { Link } from 'react-router-dom';
+import { emitSendQuestion, emitEndQuiz, socketInstantiatedObservable } from '../../services/SocketIoService';
+import { Redirect } from 'react-router-dom';
 
 let socketInstantiatedSubscription;
 
@@ -17,7 +17,7 @@ class Question extends React.Component {
         this.state = {
             questionObject: new QuestionObject(),
             questionNumber: 0,
-
+            end: false,
         }
     }
     componentDidMount() {
@@ -31,7 +31,7 @@ class Question extends React.Component {
 
     componentDidUpdate() {
         if (this.started !== true) {
-            this.props.history.push("/");
+            this.props.history.push("/Home");
         }
     }
 
@@ -70,6 +70,14 @@ class Question extends React.Component {
         this.setState({questionNumber: this.state.questionNumber+1});
     }
 
+    endbuttonClicked = () => {
+        emitEndQuiz({
+            roomId: this.roomId,
+            quizId: this.questions[0].correspondingQuizId
+        })
+        this.setState({end: true});
+    }
+
     renderButton() {
         if ((this.state.questionNumber + 1) !== this.questions.length) {
             return (
@@ -82,19 +90,20 @@ class Question extends React.Component {
             );
         } else {
             return (
-                <Link to="/">
-                    <button 
-                        className='tc pa3 ba b--black bg-black white br2' 
-                        style={{cursor: "pointer"}}
-                        placeholder='Pin Number'
-                        onClick={this.buttonClicked}
-                    >End</button>
-                </Link>
+                <button 
+                    className='tc pa3 ba b--black bg-black white br2' 
+                    style={{cursor: "pointer"}}
+                    placeholder='Pin Number'
+                    onClick={this.endbuttonClicked}
+                >End</button>           
             );
         }
     }
    
     render() {
+        if (this.state.end === true) {
+            return <Redirect to="/" />
+        }
         return (
             <div className="quiz-details pa2">
                 <div>
