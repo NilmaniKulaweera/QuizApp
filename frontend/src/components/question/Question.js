@@ -2,10 +2,11 @@ import React from 'react';
 import { getQuestionDetails } from '../../services/BackEndService';
 import QuestionObject from '../../models/QuizObject';
 import './Question.css';
-import { emitSendQuestion, emitEndQuiz, socketInstantiatedObservable } from '../../services/SocketIoService';
+import { emitSendQuestion, emitEndQuiz, socketInstantiatedObservable, receiveAnswer } from '../../services/SocketIoService';
 import { Redirect } from 'react-router-dom';
 
 let socketInstantiatedSubscription;
+let receiveAnswerSubscription;
 
 class Question extends React.Component {
     questions = [];
@@ -27,8 +28,10 @@ class Question extends React.Component {
         if(this.started === true) {
             this.getQuestions();
         }
+        this.subscribeToObservables();
     }
 
+    // to handle page refresh
     componentDidUpdate() {
         if (this.started !== true) {
             this.props.history.push("/Home");
@@ -39,6 +42,16 @@ class Question extends React.Component {
         if(socketInstantiatedSubscription){
             socketInstantiatedSubscription.unsubscribe();
         }
+        this.unsubscribeFromObservables();
+    }
+
+    subscribeToObservables = () => {
+        receiveAnswerSubscription = receiveAnswer.subscribe((data)=>{
+            console.log("answer received: ", data);
+        });
+    }
+    unsubscribeFromObservables() {
+        receiveAnswerSubscription.unsubscribe();
     }
 
     getQuestions() {

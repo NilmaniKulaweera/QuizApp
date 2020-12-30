@@ -11,6 +11,7 @@ export const disconnectPeerObservable = new BehaviorSubject();
 export const joinSuccessfull = new BehaviorSubject();
 export const nextQuestion = new BehaviorSubject();
 export const endQuiz = new BehaviorSubject();
+export const receiveAnswer = new BehaviorSubject();
 
 export function setSocketConnection() {
     socket = io(ENDPOINT);
@@ -46,6 +47,9 @@ export function addSocketListeners() {
     socket.on('endQuiz',(data)=>{
         endQuiz.next(data);
     });
+    socket.on('receiveAnswer',(data)=>{
+        receiveAnswer.next(data);
+    });
     console.log("socket listeners added");
 }
 
@@ -69,6 +73,11 @@ export function emitSendQuestion(questionData) {
 export function emitEndQuiz(data) {
     console.log("emitted end quiz to peers: ", data);
     socket.emit('endQuiz', data);
+}
+
+export function emitSendAnswer(data) {
+    console.log("emitted answer: ", data);
+    socket.emit('sendAnswer', data);
 }
 
 export function isSocketConnected() {

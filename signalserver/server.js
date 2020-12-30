@@ -56,6 +56,10 @@ io.on('connection',(socket)=>{
         console.log(data.quizId);
         io.to(data.roomId).emit('endQuiz',data);
     });
+    socket.on('sendAnswer',function(data){
+        console.log('answer received: ', data);
+        io.to(data.roomId).emit('receiveAnswer', data);
+    });
 });
 
 http.listen(3000,()=>{

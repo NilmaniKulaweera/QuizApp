@@ -1,7 +1,8 @@
 import React from 'react';
 import QuestionObject from '../../models/QuestionObject';
-import { nextQuestion, endQuiz } from '../../services/SocketIoService';
+import { nextQuestion, endQuiz, emitSendAnswer } from '../../services/SocketIoService';
 import { Redirect } from 'react-router-dom';
+import { Fragment } from 'react';
 
 let nextquestionSubscribed;
 let endQuizSubscription;
@@ -22,7 +23,7 @@ class Play extends React.Component {
     }
 
     componentWillUnmount() {
-
+        this.unsubscribeSocketServices();
     }
 
     subscribetoSocketServices() {
@@ -44,6 +45,19 @@ class Play extends React.Component {
         endQuizSubscription.unsubscribe();
     }
 
+    submitAnswer = (event) => {
+        var ele = document.getElementsByName('answers'); 
+        var answerId;
+        
+        for(var i = 0; i < ele.length; i++) { 
+            if (ele[i].checked) {
+                answerId = ele[i].value;
+            } 
+        } 
+
+        emitSendAnswer({answerId: answerId, roomId: this.state.questionObject.roomId})
+    }
+
     render() {
         if (this.state.end === true) {
             return <Redirect to="/Result" />
@@ -55,11 +69,17 @@ class Play extends React.Component {
         
         if (this.state.questionObject) {
             if (this.state.questionObject.answers) {
-                answersList = <ul>
+                // answersList = <ul>
+                //     {this.state.questionObject.answers.map((value, index) => {
+                //         return <li key={index}>{value.answer}</li>
+                //     })}
+                // </ul>
+                answersList = <Fragment>
                     {this.state.questionObject.answers.map((value, index) => {
-                        return <li key={index}>{value.answer}</li>
+                        console.log("value",value);
+                        return <Fragment key={value.answerId}><input value={value.answerId} type="radio" name="answers" />{value.answer}<br/><br/></Fragment>;
                     })}
-                </ul>
+                </Fragment>
             }
             questionDiv = <div className="card-content" style={{ width: "100%" }}>
                 <h3>question number {this.state.questionNumber + 1} </h3>
@@ -70,6 +90,11 @@ class Play extends React.Component {
                 <p>
                     {answersList}
                 </p>
+                <button 
+                        className='tc pa3 ba b--black bg-black white br2' 
+                        style={{cursor: "pointer"}}
+                        onClick={this.submitAnswer}
+                    >Submit Answer</button>
             </div>;
         }
         else {
