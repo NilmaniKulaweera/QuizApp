@@ -4,12 +4,11 @@ import Play from './Play';
 import './Quiz.css';
 
 
-
 class Quiz extends React.Component {
+    username = this.props.location.state.username;
 
 
     componentDidMount() {
-
     }
 
     componentWillUnmount() {
@@ -24,7 +23,7 @@ class Quiz extends React.Component {
         return (
             <div className='quiz-details-container'>
                 {/* <QuizDetail quizObject={this.state.quizObject} roomId={this.state.pinNumber}></QuizDetail> */}
-                <Play></Play>
+                <Play username={this.username}></Play>
             </div>
         )
     }

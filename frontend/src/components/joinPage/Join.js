@@ -38,7 +38,7 @@ class Join extends React.Component {
         joinedSuccessfully =joinSuccessfull.subscribe((join)=>{
             console.log('join fired');
             if(join === 'done'){
-                this.props.history.push('/quiz');
+                this.props.history.push('/quiz', {username: this.state.username});
             }
         });
     }

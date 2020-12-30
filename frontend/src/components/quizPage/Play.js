@@ -19,6 +19,7 @@ class Play extends React.Component {
         }
     }
     componentDidMount() {
+        console.log("props: ",this.props.username);
         this.subscribetoSocketServices();
     }
 
@@ -55,7 +56,7 @@ class Play extends React.Component {
             } 
         } 
 
-        emitSendAnswer({answerId: answerId, roomId: this.state.questionObject.roomId})
+        emitSendAnswer({answerId: answerId, roomId: this.state.questionObject.roomId, username: this.props.username})
     }
 
     render() {
