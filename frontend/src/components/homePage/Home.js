@@ -24,6 +24,7 @@ function Home() {
     const [usernames, setUsernames] = useState([]);
 
     useEffect(() => {
+        console.log("home mounted");
         subscribeToObservables();
         return () => {
             unsubscribeFromObservables();

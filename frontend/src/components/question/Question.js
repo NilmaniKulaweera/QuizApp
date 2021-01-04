@@ -22,20 +22,17 @@ class Question extends React.Component {
         }
     }
     componentDidMount() {
-        console.log(this.props.history);
+        console.log("question mounted");
         this.started = this.props.location.started;
         this.roomId = this.props.location.roomId;
         if(this.started === true) {
             this.getQuestions();
-        }
-        this.subscribeToObservables();
-    }
-
-    // to handle page refresh
-    componentDidUpdate() {
-        if (this.started !== true) {
+        } 
+        // to handle page refresh
+        else {
             this.props.history.push("/Home");
         }
+        this.subscribeToObservables();
     }
 
     componentWillUnmount() {
@@ -114,6 +111,7 @@ class Question extends React.Component {
     }
    
     render() {
+        console.log("started", this.started);
         if (this.state.end === true) {
             return <Redirect to="/" />
         }
