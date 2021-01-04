@@ -13,9 +13,9 @@ const RoomDetail = (props) => {
                 <p className="fw9">Room Id</p>
                 <p>{ roomId }</p>
                 <p className="fw9">Connected Users</p>
-                <div>
-                    {usernames.map((username, i) => <p key={i}>{username}</p>)}
-                </div>
+                <ul>
+                    {usernames.map((username, i) => <li key={i}>{username}</li>)}
+                </ul>
             </div>
         </div>
     );

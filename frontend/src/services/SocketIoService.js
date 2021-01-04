@@ -1,4 +1,4 @@
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import io from 'socket.io-client';
 
 let socket;
@@ -6,7 +6,7 @@ const ENDPOINT = 'localhost:3000';
 
 export const socketInstantiatedObservable = new BehaviorSubject();
 export const roomcreatedObservable = new BehaviorSubject();
-export const newUserJoinedObservable = new BehaviorSubject();
+export const newUserJoinedObservable = new Subject();
 export const disconnectPeerObservable = new BehaviorSubject();
 export const joinSuccessfull = new BehaviorSubject();
 export const nextQuestion = new BehaviorSubject();

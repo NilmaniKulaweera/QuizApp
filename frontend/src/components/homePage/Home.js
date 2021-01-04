@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Home.css';
 import { getQuizDetails } from '../../services/BackEndService';
-import QuizObject from '../../models/QuizObject';
 import { emitCreateRoom, isSocketConnected, socketInstantiatedObservable, roomcreatedObservable, newUserJoinedObservable, disconnectPeerObservable } from '../../services/SocketIoService';
 import Question from '../question/Question';
 import { Switch, Route } from 'react-router-dom';
@@ -13,31 +12,28 @@ let roomcreatedSubscription;
 let newUserJoinedSubscription;
 let disconnectPeerSubscription;
 
-class Home extends React.Component {
-    pinNumber = this.getRandomInt(1,100000).toString();
+function Home() {
+    const getRandomInt = (min, max) => {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
     
-    constructor() {
-        super();
-        this.state = {
-            pinNumber: null,
-            quizObject: new QuizObject(),
-            usernames: [],
+    const [pinNumber, setPinNumber] = useState(getRandomInt(1,100000).toString());
+    const [quizObject, setQuizObject] = useState(getQuizDetails()[0]);
+    const [usernames, setUsernames] = useState([]);
+
+    useEffect(() => {
+        subscribeToObservables();
+        return () => {
+            unsubscribeFromObservables();
         }
-    }
-    
-    componentDidMount() {
-        this.subscribeToObservables();
-        this.setState({quizObject: getQuizDetails()[0], usernames: []});
-    }
+    }, []);
 
-    componentWillUnmount() {
-        this.unsubscribeFromObservables();
-    }
-
-    subscribeToObservables = () => {
+    const subscribeToObservables = () => {
         socketInstantiatedSubscription = socketInstantiatedObservable.subscribe((value) => {
             if (value === 1) {
-                emitCreateRoom(this.pinNumber);
+                emitCreateRoom(pinNumber);
             }
         });
 
@@ -45,54 +41,41 @@ class Home extends React.Component {
             if (room != null) {
                 console.log("room created", room);
                 isSocketConnected();
-                this.setState({pinNumber: room});
+                setPinNumber(room);
             }
         });
-
+        
         newUserJoinedSubscription = newUserJoinedObservable.subscribe((username) => {
             if (username != null) {
-                this.state.usernames.push(username);
-                this.setState({usernames: this.state.usernames});
+                setUsernames((usernamesList) => [...usernamesList, username]);   
                 console.log("new peer joined", username);
             }
         });
 
         disconnectPeerSubscription = disconnectPeerObservable.subscribe((username) => {
                 if (username != null) {
-                var index = this.state.usernames.indexOf(username);
-                if (index > -1) {
-                    this.state.usernames.splice(index, 1);
-                }
-                this.setState({usernames: this.state.usernames});
+                setUsernames((usernamesList) => [usernamesList.filter(name => name !== username)]);
                 console.log("peer left", username);
             }
         });
     }
 
-    unsubscribeFromObservables() {
+    const unsubscribeFromObservables = () => {
         socketInstantiatedSubscription.unsubscribe();
         roomcreatedSubscription.unsubscribe();
         newUserJoinedSubscription.unsubscribe();
         disconnectPeerSubscription.unsubscribe();
     }
 
-    getRandomInt(min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    render() {
-        return (
-            <div className='quiz-details-container'>
-                <QuizDetail quizObject={this.state.quizObject} roomId={this.state.pinNumber}></QuizDetail>
-                <RoomDetail roomId={this.state.pinNumber} usernames={this.state.usernames}></RoomDetail>
-                <Switch>
-                    <Route exact path="/Home/AdminQuiz" handler={Question} component={Question} />
-                </Switch>
-            </div>       
-        )
-    }
+    return (
+        <div className='quiz-details-container'>
+            <QuizDetail quizObject={quizObject} roomId={pinNumber}></QuizDetail>
+            <RoomDetail roomId={pinNumber} usernames={usernames}></RoomDetail>
+            <Switch>
+                <Route exact path="/Home/AdminQuiz" handler={Question} component={Question} />
+            </Switch>
+        </div>       
+    )
 }
 
 export default Home;
