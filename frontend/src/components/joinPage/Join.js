@@ -1,13 +1,12 @@
 import React from 'react';
 import './Join.css';
+import { emitJoinRoom, isSocketConnected, emitDisconnectPeer,joinSuccessfull } from '../../services/SocketIoService';
 
-import io from 'socket.io-client';
 
-let socket;
-const ENDPOINT = 'localhost:3000';
-
+let joinedSuccessfully;
 class Join extends React.Component {
     pinNumber = '';
+    //history = useHistory();
 
     constructor() {
         super();
@@ -18,22 +17,13 @@ class Join extends React.Component {
     }
 
     componentDidMount() {
-        this.setSocketConnection();
-        this.addSocketListeners();
+        this.subscribeToObservables(); 
     }
 
     componentWillUnmount() {
-        socket.emit('disconnectPeer', {username: this.state.username, room: this.state.pinNumber});
-        socket.off();
-        console.log("leave from room", this.state.pinNumber);
-    }
-
-    setSocketConnection() {
-        socket = io(ENDPOINT);
-    }
-
-    addSocketListeners() {
-        
+        this.unsubscribeFromObservables();
+        // emitDisconnectPeer({username: this.state.username, room: this.state.pinNumber})
+        // console.log("leave from room", this.state.pinNumber);
     }
 
     usernameChange = (event) => {
@@ -43,10 +33,25 @@ class Join extends React.Component {
     pinNumberChange = (event) => {
         this.setState({pinNumber: event.target.value});
     }
+
+    subscribeToObservables = () => {
+        joinedSuccessfully =joinSuccessfull.subscribe((join)=>{
+            console.log('join fired');
+            if(join === 'done'){
+                this.props.history.push('/quiz', {username: this.state.username});
+            }
+        });
+    }
+    unsubscribeFromObservables() {
+        joinedSuccessfully.unsubscribe();
+    }
+
     
-    buttonClicked = (event) => {
-        socket.emit('join', {username: this.state.username, room: this.state.pinNumber});
-        console.log("joined to room", this.state.pinNumber);
+    joinQuiz = (event) => {
+        if (isSocketConnected()) {
+            emitJoinRoom({username: this.state.username, room: this.state.pinNumber});
+            console.log("joined to room", this.state.pinNumber);
+        }
     }
 
     render() {
@@ -72,7 +77,7 @@ class Join extends React.Component {
                         className='tc pa3 ba b--black bg-black white br2' 
                         style={{cursor: "pointer"}}
                         placeholder='Pin Number'
-                        onClick={this.buttonClicked}
+                        onClick={this.joinQuiz}
                     >Join Quiz</button>
                 </div>
             </div>        

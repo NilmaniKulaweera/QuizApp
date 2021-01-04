@@ -17,6 +17,7 @@ io.on('connection',(socket)=>{
     socket.on('create',function(room){
         socket.join(room);
         socket.emit('roomcreated',room);
+        console.log('room created', room);
         // console.log(io.sockets.adapter.rooms);
         // if(io.sockets.adapter.rooms[room]){
         //     socket.emit('roomexists','Room : ' + room + ' exists');
@@ -29,6 +30,7 @@ io.on('connection',(socket)=>{
     socket.on('join',function(data){
         console.log(data);
         socket.join(data.room);
+        io.to(socket.id).emit('joinsuccess','done');
         socket.to(data.room).emit('newuser',data.username);
     });
     socket.on('disconnect',()=>{
@@ -39,6 +41,24 @@ io.on('connection',(socket)=>{
     socket.on('disconnectPeer',function(data){
         console.log('peer disconnected');
         socket.to(data.room).emit('disconnectPeer',data.username);
+    });
+    socket.on('sendQuestion',function(question){
+        console.log('question received: ');
+        console.log('room id: ', question.roomId);
+        console.log(question.questionId + " : " + question.question);
+        console.log('answer 1: ', question.answers[0].answer);
+        console.log('answer 2: ', question.answers[1].answer);
+        io.to(question.roomId).emit('nextquestion',question);
+    });
+    socket.on('endQuiz',function(data){
+        console.log('end quiz: ');
+        console.log(data.roomId);
+        console.log(data.quizId);
+        io.to(data.roomId).emit('endQuiz',data);
+    });
+    socket.on('sendAnswer',function(data){
+        console.log('answer received: ', data);
+        io.to(data.roomId).emit('receiveAnswer', data);
     });
 });
 
