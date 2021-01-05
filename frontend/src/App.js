@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Join from './components/joinPage/Join';
 import Start from './components/startPage/Start';
 import Home from './components/homePage/Home';
@@ -8,30 +8,28 @@ import { setSocketConnection, addSocketListeners, disconnectSocketConnection } f
 import Quiz from './components/quizPage/Quiz';
 import Result from './components/resultPage/Result';
 
-class App extends React.Component {
-    componentDidMount() {
+function App() {
+
+    useEffect(() => {
         setSocketConnection();
         addSocketListeners();
-    }
+        return () => {
+            disconnectSocketConnection();
+        }
+    }, []);
 
-    componentWillUnmount() {
-        disconnectSocketConnection();
-    }
-
-    render() {
-        return (
-            <div>
-                <Router>
-                    <Route path="/" exact component={Start} />
-                    <Route path="/Home" handler={Home} component={Home} ></Route>
-                    <Route path="/Join" exact component={Join} />
-                    <Route path="/Quiz" exact component={Quiz} />
-                    <Route path="/Result" exact component={Result} />
-                    <Route path="/Error" exact component={Error} />
-                </Router>
-            </div>
-        )
-    }
+    return (
+        <div>
+            <Router>
+                <Route path="/" exact component={Start} />
+                <Route path="/Home" handler={Home} component={Home} ></Route>
+                <Route path="/Join" exact component={Join} />
+                <Route path="/Quiz" exact component={Quiz} />
+                <Route path="/Result" exact component={Result} />
+                <Route path="/Error" exact component={Error} />
+            </Router>
+        </div>
+    );
 }
 
 export default App;
