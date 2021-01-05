@@ -29,6 +29,7 @@ function Home() {
         return () => {
             unsubscribeFromObservables();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const subscribeToObservables = () => {

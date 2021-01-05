@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { getQuestionDetails } from '../../services/BackEndService';
 import QuestionObject from '../../models/QuizObject';
 import './Question.css';
@@ -8,95 +8,93 @@ import { Redirect } from 'react-router-dom';
 let socketInstantiatedSubscription;
 let receiveAnswerSubscription;
 
-class Question extends React.Component {
-    questions = [];
-    roomId;
-    started;
+function Question(props) {
+    let roomId = props.location.roomId;
+    let started = props.location.started;
     
-    constructor() {
-        super();
-        this.state = {
-            questionObject: new QuestionObject(),
-            questionNumber: 0,
-            end: false,
-        }
-    }
-    componentDidMount() {
-        console.log("question mounted");
-        this.started = this.props.location.started;
-        this.roomId = this.props.location.roomId;
-        if(this.started === true) {
-            this.getQuestions();
+    const [questionObject, setQuestionObject] = useState(new QuestionObject());
+    const [questionNumber, setQuestionNumber] = useState(0);
+    const [end, setEnd] = useState(false);
+    const [questions, setQuestions] = useState([]);
+
+    useEffect(() => {
+        if(started === true) {
+            setQuestions(getQuestionDetails());   
         } 
         // to handle page refresh
         else {
-            this.props.history.push("/Home");
+            props.history.push("/Home");
         }
-        this.subscribeToObservables();
-    }
+        subscribeToObservables();
 
-    componentWillUnmount() {
-        if(socketInstantiatedSubscription){
-            socketInstantiatedSubscription.unsubscribe();
-        }
-        this.unsubscribeFromObservables();
-    }
+        return (() => {
+            if(socketInstantiatedSubscription){
+                socketInstantiatedSubscription.unsubscribe();
+            }
+            unsubscribeFromObservables();
+        });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    subscribeToObservables = () => {
+    const subscribeToObservables = () => {
         receiveAnswerSubscription = receiveAnswer.subscribe((data)=>{
             console.log("answer received: ", data);
         });
     }
-    unsubscribeFromObservables() {
+
+    const unsubscribeFromObservables = () => {
         receiveAnswerSubscription.unsubscribe();
     }
 
-    getQuestions() {
-        this.questions = getQuestionDetails();
-        console.log(this.questions);
-        this.setState({questionObject: this.questions[this.state.questionNumber]});
-        socketInstantiatedSubscription = socketInstantiatedObservable.subscribe((value) => {
-            if (value === 1) {
-                emitSendQuestion({
-                    roomId: this.roomId,
-                    questionId: this.questions[0].questionId,
-                    correspondingQuizId: this.questions[0].correspondingQuizId,
-                    question: this.questions[0].question, 
-                    answers: this.questions[0].answers
-                });
-            }
-        });        
-    }
+    useEffect(() =>{
+        console.log(questions);
+        if (questions.length !== 0) {
+            setQuestionObject(questions[questionNumber]);
+            socketInstantiatedSubscription = socketInstantiatedObservable.subscribe((value) => {
+                if (value === 1) {
+                    emitSendQuestion({
+                        roomId: roomId,
+                        questionId: questions[0].questionId,
+                        correspondingQuizId: questions[0].correspondingQuizId,
+                        question: questions[0].question, 
+                        answers: questions[0].answers
+                    });
+                }
+            });   
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [questions]);
 
-    nextbuttonClicked = () => {
+    const nextbuttonClicked = () => {
+        console.log(questions[questionNumber + 1]);
         emitSendQuestion({
-            roomId: this.roomId,
-            questionId: this.questions[this.state.questionNumber + 1].questionId, 
-            correspondingQuizId: this.questions[this.state.questionNumber + 1].correspondingQuizId, 
-            question: this.questions[this.state.questionNumber + 1].question, 
-            answers: this.questions[this.state.questionNumber + 1].answers
+            roomId: roomId,
+            questionId: questions[questionNumber + 1].questionId, 
+            correspondingQuizId: questions[questionNumber + 1].correspondingQuizId, 
+            question: questions[questionNumber + 1].question, 
+            answers: questions[questionNumber + 1].answers
         });
-        this.setState({questionObject: this.questions[this.state.questionNumber + 1]});
-        this.setState({questionNumber: this.state.questionNumber+1});
+        setQuestionObject(questions[questionNumber + 1]);
+        setQuestionNumber(queNum => queNum + 1);
     }
 
-    endbuttonClicked = () => {
+    const endbuttonClicked = () => {
         emitEndQuiz({
-            roomId: this.roomId,
-            quizId: this.questions[0].correspondingQuizId
+            roomId: roomId,
+            quizId: questions[0].correspondingQuizId
         })
-        this.setState({end: true});
+        setEnd(true);
     }
 
-    renderButton() {
-        if ((this.state.questionNumber + 1) !== this.questions.length) {
+    const renderButton = () => {
+        if ((questionNumber + 1) !== questions.length) {
             return (
                 <button 
-                            className='tc pa3 ba b--black bg-black white br2' 
-                            style={{cursor: "pointer"}}
-                            placeholder='Pin Number'
-                            onClick={this.nextbuttonClicked}
-                        >Next Question</button>
+                    className='tc pa3 ba b--black bg-black white br2' 
+                    style={{cursor: "pointer"}}
+                    placeholder='Pin Number'
+                    onClick={nextbuttonClicked}
+                >Next Question</button>
             );
         } else {
             return (
@@ -104,33 +102,38 @@ class Question extends React.Component {
                     className='tc pa3 ba b--black bg-black white br2' 
                     style={{cursor: "pointer"}}
                     placeholder='Pin Number'
-                    onClick={this.endbuttonClicked}
+                    onClick={endbuttonClicked}
                 >End</button>           
             );
         }
     }
-   
-    render() {
-        console.log("started", this.started);
-        if (this.state.end === true) {
-            return <Redirect to="/" />
-        }
+ 
+    if (end === true) {
+        return <Redirect to="/" />
+    }
+
+    if (questions.length === 0) {
+        return (
+            <div className="card-content" style={{width: "100%"}}>No questions</div>
+        );
+    } else {
         return (
             <div className="quiz-details pa2">
                 <div>
                     <h1>Questions</h1>
                 </div>
                 <div className="card-content" style={{width: "100%"}}>
-                    <h3>question number {this.state.questionNumber + 1} out of {this.questions.length}</h3>
+                    <h3>question number {questionNumber + 1} out of {questions.length}</h3>
                     <p className="fw9">Question Id</p>
-                    <p>{this.state.questionObject.questionId}</p>
+                    <p>{questionObject.questionId}</p>
                     <p className="fw9">Question</p>
-                    <p>{this.state.questionObject.question}</p>
-                    {this.renderButton()}
+                    <p>{questionObject.question}</p>
+                    {renderButton()}
                 </div>
             </div>
         );
     }
+    
         
 }
 
