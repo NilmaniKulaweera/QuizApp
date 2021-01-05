@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { getQuestionDetails } from '../../services/BackEndService';
 import QuestionObject from '../../models/QuizObject';
 import './Question.css';
 import { emitSendQuestion, emitEndQuiz, socketInstantiatedObservable, receiveAnswer } from '../../services/SocketIoService';
 import { Redirect } from 'react-router-dom';
+import {RoomNumberContext} from '../../App';
 
 let socketInstantiatedSubscription;
 let receiveAnswerSubscription;
 
 function Question(props) {
-    let roomId = props.location.roomId;
+    const roomNumberContext = useContext(RoomNumberContext);
+  
     let started = props.location.started;
     
     const [questionObject, setQuestionObject] = useState(new QuestionObject());
@@ -53,7 +55,7 @@ function Question(props) {
             socketInstantiatedSubscription = socketInstantiatedObservable.subscribe((value) => {
                 if (value === 1) {
                     emitSendQuestion({
-                        roomId: roomId,
+                        roomId: roomNumberContext.roomNumberState,
                         questionId: questions[0].questionId,
                         correspondingQuizId: questions[0].correspondingQuizId,
                         question: questions[0].question, 
@@ -68,7 +70,7 @@ function Question(props) {
     const nextbuttonClicked = () => {
         console.log(questions[questionNumber + 1]);
         emitSendQuestion({
-            roomId: roomId,
+            roomId: roomNumberContext.roomNumberState,
             questionId: questions[questionNumber + 1].questionId, 
             correspondingQuizId: questions[questionNumber + 1].correspondingQuizId, 
             question: questions[questionNumber + 1].question, 
@@ -80,7 +82,7 @@ function Question(props) {
 
     const endbuttonClicked = () => {
         emitEndQuiz({
-            roomId: roomId,
+            roomId: roomNumberContext.roomNumberState,
             quizId: questions[0].correspondingQuizId
         })
         setEnd(true);

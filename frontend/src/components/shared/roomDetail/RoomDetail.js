@@ -1,8 +1,11 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import './RoomDetail.css';
+import {RoomNumberContext} from '../../../App';
 
 const RoomDetail = (props) => {
-    const { roomId, usernames } = props;
+    const { usernames } = props;
+
+    const roomNumberContext = useContext(RoomNumberContext);
 
     return (
         <div className="room-details pa2">
@@ -11,7 +14,7 @@ const RoomDetail = (props) => {
             </div>
             <div className="card-content" style={{width: "100%"}}>
                 <p className="fw9">Room Id</p>
-                <p>{ roomId }</p>
+                <p>{roomNumberContext.roomNumberState}</p>
                 <p className="fw9">Connected Users</p>
                 <ul>
                     {usernames.map((username, i) => <li key={i}>{username}</li>)}
